@@ -1,0 +1,96 @@
+{% extends "servicereferralapp/base.html" %}
+{% load staticfiles %}
+<!-- Contents-->
+{% block contents %}
+
+ <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <h1>
+      Add Service
+      <small></small>
+    </h1>
+    <ol class="breadcrumb">
+      <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+      <li class="active">Services</li>
+      <li class="active">Add</li>
+    </ol>
+  </section>
+
+  <!-- Main content -->
+  <section class="content">
+      
+      <!-- SELECT2 EXAMPLE -->
+      <div class="box box-default">
+        <div class="box-header with-border">
+          <h3 class="box-title">Please Complete the Form</h3>
+
+          <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+            <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>
+          </div>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+          <div class="row">
+            <div class="col-md-6">
+                <form role="form" method="post" action="/portal/services/view/update/" >
+                  {% csrf_token %}
+                  <input type="hidden" name="id" value="{{ info.id }}">
+
+                      <div class="box-body">
+                        
+                            <div class="form-group">
+                              <label for="InputBudget">Title</label>
+                              <input type="text" class="form-control" id="InputBudget" placeholder="Title" name="title" value="{{ info.title }}">
+                            </div>
+
+                            <div class="form-group">
+                              <label>Category</label>
+                              <select class="form-control" name="category" value="{{ info.category }}">
+                                <option {% if info.category == "Home" %}selected="selected"{% endif %}>Home</option>
+                                <option {% if info.category == "Office" %}selected="selected"{% endif %}>Office</option>
+                              </select>
+                            </div>
+                        
+                            <div class="form-group">
+                              <label for="InputBudget">Sub Category</label>
+                              <input type="text" class="form-control" id="InputBudget" placeholder="Sub Category" name="subcategory" value="{{ info.subcategory }}">
+                            </div>
+                        
+                            <div class="form-group">
+                              <label for="InputBudget">Description</label>
+                              <input type="text" class="form-control" id="InputBudget" placeholder="Description" name="description" value="{{ info.description }}">
+                            </div>
+                        
+                            <div class="form-group">
+                              <label for="InputBudget">Tags</label>
+                              <input type="text" class="form-control" id="InputBudget" placeholder="Tags" name="tags" value="{{ info.tags }}">
+                            </div>
+                        
+                            
+                            <button type="submit" class="btn btn-primary pull-right">Update</button>
+                     
+                  
+                      </div>
+                      <!-- /.box-body -->   
+                </form>
+                <!-- /form -->
+            </div>
+            <!-- /.col-md-6 -->
+            
+            
+
+            
+          </div>
+          <!-- /.row -->
+        </div>
+        <!-- /.box-body -->
+      </div>
+      <!-- /.box -->
+
+</section>
+</div>
+<!-- /.outside -->
+
+{% endblock %}
+

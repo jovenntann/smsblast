@@ -1,0 +1,110 @@
+{% extends "sirvasmsapp/base.html" %}
+{% load staticfiles %}
+<!-- Contents-->
+{% block contents %}
+
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <h1>
+      <small>Received SMS</small>
+    </h1>
+  <ol class="breadcrumb">
+      <li><a href="#"><i class="fa fa-calendar"></i> {{ date_from }}</a></li>
+      <li class="active">{{ date_to }} &nbsp;&nbsp;&nbsp; </li> 
+     <a href="#" data-toggle="modal" data-target="#modal-daterange" class="btn btn-primary  btn-sm btn-flat">Search</a>
+  </ol>
+  </section>
+
+  <!-- Main content -->
+  <section class="content container-fluid">
+
+   <div class="box">
+    <div class="box-header">
+      <h3 class="box-title"><b> SMS Received </b></h3>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body table-responsive">
+
+          <table id="dataTables-example" class="table table-bordered table-hover">
+            <thead>
+            <tr>
+              <th>ID</th>
+              <th>Date</th>
+              <th>From #</th>
+              <th>Name</th>
+              <th>To #</th>
+              <th>Message</th>
+              <th>SMS Status</th>
+              <!-- <th>MessageSid</th> -->
+
+
+            </tr>
+            </thead>
+
+                <tbody>
+
+                {% if received_lists %} <!-- If Access Recrords exist in views.py -->
+
+                  {% for acc in received_lists %}
+
+                  <tr class="odd gradeX">
+                        <td><a href="/portal/sms/view/{{ acc.id }}">{{ acc.id }}</a></td>
+                        <td>{{ acc.date|date:"m-d-Y h:i:s A" }}</td>
+                        <td>{{ acc.from_number }}</td>
+                        <td>{{ acc.name }}</td>
+                        <td>{{ acc.to_number }}</td>
+                        <td>{{ acc.message|truncatechars:100 }}</td>
+                        <td>{{ acc.status }}</td>
+                        <!-- <td>{{ acc.MessageSid }}</td> -->
+                  </tr>
+
+                  {% endfor %}
+
+                {% else %}
+                    <p></p>
+                {% endif %}
+
+                </tbody>
+
+          </table>
+
+    </div>
+    <!-- /.box-body -->
+  </div>
+  <!-- /.box -->
+
+
+  </section>
+
+
+
+
+
+</div>
+<!-- /.content-wrapper -->
+{% endblock %}
+
+
+
+
+
+
+
+
+
+<!-- Agent JS -->
+{% block script %}
+<script>
+$(document).ready(function() {
+    $('#dataTables-example').DataTable({
+        responsive: true,
+        "pageLength": 15,
+        "lengthMenu": [ 10, 15, 25, 50, 75, 100 ],
+        "order": [[ 0, "desc" ]]
+    });
+});
+</script>
+{% endblock %}
+
+
+

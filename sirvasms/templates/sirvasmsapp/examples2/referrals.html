@@ -1,0 +1,114 @@
+{% extends "servicereferralapp/base.html" %}
+{% load staticfiles %}
+<!-- Contents-->
+{% block contents %}
+
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <h1>
+      <a class="btn btn-primary" href="add/">Add Referral</a>
+      <small>Click here to add new Referral</small>
+    </h1>
+    <ol class="breadcrumb">
+      <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+      <li class="active">Referrals</li>
+    </ol>
+  </section>
+
+  <!-- Main content -->
+  <section class="content container-fluid">
+
+   <div class="box">
+    <div class="box-header">
+      <h3 class="box-title">Referrals</h3>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body table-responsive">
+
+          <table id="dataTables-example" class="table table-bordered table-hover">
+            <thead>
+            <tr>
+              <th>Referral ID</th>
+              <th>Agent</th>
+              <th>Contact</th>
+              <th>Service</th>
+              <th>Budget</th>
+              <th>Notes</th>
+              <th>Status</th>
+            </tr>
+            </thead>
+
+                <tbody>
+
+                {% if referral_lists %} <!-- If Access Recrords exist in views.py -->
+
+                  {% for acc in referral_lists %}
+
+                  <tr class="odd gradeX">
+                        <td><a href="/portal/referrals/view/{{ acc.id }}">{{ acc.id }}</a></td>
+                        <td>{{ acc.user.first_name }} {{ acc.user.last_name }}</td>
+                        <td>{{ acc.contact.firstname }} {{ acc.contact.lastname }}</td>
+                        <td>{{ acc.service }}</td>
+                        <td>{{ acc.budget }}</td>
+                        <td>{{ acc.notes }}</td>
+                    
+                        {% if acc.status == "Open" %}
+                        <td><button class="btn btn-primary btn-xs" role="button">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Open&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button></td> <!--Incoming-->
+                        {% elif acc.status == "On-going" %}
+                        <td><button class="btn btn-warning btn-xs" role="button">&nbsp;On-going&nbsp;</button></td> <!--Outgoing-->
+                        {% elif acc.status == "Completed" %}
+                        <td><button class="btn btn-success btn-xs" role="button">Completed</button></td> <!--Outgoing-->
+                        {% endif %}
+                    
+                  </tr>
+
+                  {% endfor %}
+
+                {% else %}
+                    <p></p>
+                {% endif %}
+
+                </tbody>
+
+          </table>
+
+    </div>
+    <!-- /.box-body -->
+  </div>
+  <!-- /.box -->
+
+
+  </section>
+
+
+
+
+
+</div>
+<!-- /.content-wrapper -->
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+{% block script %}
+<script>
+$(document).ready(function() {
+    $('#dataTables-example').DataTable({
+        responsive: true,
+        "pageLength": 15,
+        "lengthMenu": [ 10, 15, 25, 50, 75, 100 ],
+        "order": [[ 0, "desc" ]]
+    });
+});
+</script>
+{% endblock %}
+
+
+

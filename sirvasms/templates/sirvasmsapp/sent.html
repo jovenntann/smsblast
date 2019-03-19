@@ -1,0 +1,118 @@
+{% extends "sirvasmsapp/base.html" %}
+{% load staticfiles %}
+<!-- Contents-->
+{% block contents %}
+
+
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <h1>
+      <a href="#" data-toggle="modal" data-target="#modal-recordings" class="btn btn-primary  btn-sm btn-flat">Send SMS</a>
+      <small>Click here to Manually Send SMS</small>
+    </h1>
+  <ol class="breadcrumb">
+      <li><a href="#"><i class="fa fa-calendar"></i> {{ date_from }}</a></li>
+      <li class="active">{{ date_to }} &nbsp;&nbsp;&nbsp; </li> 
+     <a href="#" data-toggle="modal" data-target="#modal-daterange" class="btn btn-primary  btn-sm btn-flat">Search</a>
+  </ol>
+  </section>
+
+  <!-- Main content -->
+  <section class="content container-fluid">
+
+   <div class="box">
+    <div class="box-header">
+      <h3 class="box-title"><b> SMS Sent </b></h3>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body table-responsive">
+
+          <table id="dataTables-example" class="table table-bordered table-hover">
+            <thead>
+            <tr>
+              <th>ID</th>
+              <th>DateSent</th>
+              <th>Date</th>
+              <th>Tag</th>
+              <th>Provider</th>
+              <th>Name</th>
+              <th>To</th>
+              <th>User</th>
+              <th>Message</th>
+              <th>GoIP</th>
+              <th>Flag</th>
+            </tr>
+            </thead>
+
+                <tbody>
+
+                {% if sent_lists %} <!-- If Access Recrords exist in views.py -->
+                  {% for acc in sent_lists %}
+                  <tr class="odd gradeX">
+                        <td>{{ acc.id }}</td>
+                        <td>{{ acc.dateSent|date:"m-d-Y H:i:s A" }}</td>
+                        <td>{{ acc.date|date:"m-d-Y h:i:s A" }}</td>
+                        <td>{{ acc.tag }}</td>
+                        <td>{{ acc.provider }}</td>
+                        <td>{{ acc.name }}</td>
+                        <td>{{ acc.to_number }}</td>
+                        <td>{{ acc.user }}</td>
+                        <td>{{ acc.message|truncatechars:100 }}</td>
+                        <td>{{ acc.goip }}</td>
+
+                        {% if acc.flag == 2 %}
+                        <td><font color="#cc0619">Failed</font></td>                    
+                        {% else %}
+                        <td><font color="#367fa9">Sent</font></td>
+                        {% endif %}
+                  </tr>
+
+                  {% endfor %}
+                {% else %}
+                    <p></p>
+                {% endif %}
+
+                </tbody>
+
+          </table>
+
+    </div>
+    <!-- /.box-body -->
+  </div>
+  <!-- /.box -->
+
+
+  </section>
+
+
+
+
+
+</div>
+<!-- /.content-wrapper -->
+{% endblock %}
+
+
+
+
+
+
+
+
+
+<!-- Agent JS -->
+{% block script %}
+<script>
+$(document).ready(function() {
+    $('#dataTables-example').DataTable({
+        responsive: true,
+        "pageLength": 15,
+        "lengthMenu": [ 10, 15, 25, 50, 75, 100 ],
+        "order": [[ 1, "desc" ]]
+    });
+});
+</script>
+{% endblock %}
+
+
+

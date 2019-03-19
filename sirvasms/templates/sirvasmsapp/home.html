@@ -1,0 +1,442 @@
+{% extends "sirvasmsapp/base.html" %}
+{% load staticfiles %}
+<!-- Contents-->
+{% block contents %}
+
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <h1>
+      Dashboard {{ forwarded_to }}
+      <small>Control Panel</small>
+    </h1>
+  <ol class="breadcrumb">
+      <li><a href="#"><i class="fa fa-calendar"></i> {{ date_from }}</a></li>
+      <li class="active">{{ date_to }} &nbsp;&nbsp;&nbsp; </li> 
+     <a href="#" data-toggle="modal" data-target="#modal-daterange" class="btn btn-primary  btn-sm btn-flat">Search</a>
+  </ol>
+  </section>
+
+  <!-- Main content -->
+  <section class="content container-fluid">
+
+        <div class="row">
+          <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-blue">
+              <div class="inner">
+                <h3>{{ sms_sent }}</h3>
+
+                <p>SMS Sent</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-bag"></i>
+              </div>
+              <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-blue">
+              <div class="inner">
+                <h3>{{ sms_received }}</h3>
+
+                <p>SMS Received</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-stats-bars"></i>
+              </div>
+              <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-blue">
+              <div class="inner">
+                <h3>{{ sms_queue }}</h3>
+
+                <p>Queue SMS</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-person-add"></i>
+              </div>
+              <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-blue">
+              <div class="inner">
+                <h3>{{ sms_failed }}</h3>
+
+                <p>Failed SMS</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-pie-graph"></i>
+              </div>
+              <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+        </div>
+        <!-- /.row -->
+        <!-- Main row -->
+   
+    
+    
+    <div class="row">
+
+        <div class="col-md-6">
+          <!-- AREA CHART -->
+          <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">Send and Received</h3>
+
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+              </div>
+            </div>
+            <div class="box-body">
+              <div class="chart">
+                <canvas id="canvas-line" />
+              </div>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+        </div>
+
+        <div class="col-md-6">
+
+            <div class="box">
+                <div class="box-header">
+                  <h3 class="box-title">GoIP Status</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body table-responsive">
+            
+                      <table id="dataTables-example" class="table table-bordered table-hover">
+                        <thead>
+                        <tr>
+                          <th>Name</th>
+                          <th>State</th>
+                          <th>GSM</th>
+                        </tr>
+                        </thead>
+            
+                            <tbody>
+            
+                            {% if goip_lists %}
+                              {% for acc in goip_lists %}
+                              <tr class="odd gradeX">
+                                    <td>{{ acc.name }}</td>
+
+                                    {% if acc.alive == 1 %}
+                                    <td><span class="label label-success">Online</span></td>
+                                    {% else %}
+                                    <td><span class="label label-warning">Offline</span></td>
+                                    {% endif %}
+
+                                    {% if acc.gsm_status == 'LOGIN' %}
+                                    <td><span class="label label-success">{{ acc.gsm_status }}</span></td>
+                                    {% else %}
+                                    <td><span class="label label-warning">LOGOUT</span></td>
+                                    {% endif %}        
+                              </tr>
+                              {% endfor %}
+                            {% else %}
+                                <p></p>
+                            {% endif %}
+            
+                            </tbody>
+            
+                      </table>
+            
+                </div>
+                <!-- /.box-body -->
+              </div>
+              <!-- /.box -->
+            
+        </div>
+      
+        <div class="col-md-6" style="display:none">
+          <!-- AREA CHART -->
+          <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">SMS Traffic Countries</h3>
+
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+              </div>
+            </div>
+            <div class="box-body">
+              <div class="chart">
+                <canvas id="canvas" />
+              </div>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+        </div>
+
+    <!-- Row -->
+    </div>
+    
+    
+    <div class="row" style="display:none">
+      
+            <div class="col-md-6">
+              <div class="box box-primary">
+                <div class="box-header with-border">
+                  <h3 class="box-title">Countries</h3>
+
+                  <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                    </button>
+                    <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                  </div>
+                </div>
+                <div class="box-body">
+                  <div class="chart">
+                    <canvas id="chart-area" />
+                  </div>
+                </div>
+              </div>
+            </div>
+      
+    </div>
+    
+ 
+
+    
+    
+  </section>
+
+</div>
+<!-- /.content-wrapper -->
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% block chart_js %}
+
+<script>
+
+    // GOIP TABLES
+
+    $(document).ready(function() {
+        $('#dataTables-example').DataTable({
+            responsive: true,
+            "pageLength": 100,
+            "lengthMenu": [ 10, 15, 25, 50, 75, 100 ],
+            "order": [[ 0, "asc" ]]
+        });
+    });
+
+    //BAR -------------------------------------------------------------------------------------------------------------------------------------
+
+    var color = Chart.helpers.color;
+    var barChartData = {
+        labels: [{% for acc in graph_list %}"{{ acc.country }}",{% endfor %}],
+        datasets: [{
+            label: 'Received',
+            backgroundColor: color(window.chartColors.green).alpha(0.5).rgbString(),
+            borderColor: window.chartColors.green,
+            borderWidth: 1,
+            data: [{% for acc in graph_list %}"{{ acc.total_received }}",{% endfor %}]
+        }, {
+            label: 'Sent',
+            backgroundColor: color(window.chartColors.blue).alpha(0.5).rgbString(),
+            borderColor: window.chartColors.blue,
+            borderWidth: 1,
+            data: [{% for acc in graph_list %}"{{ acc.total_sent }}",{% endfor %}]
+        }]
+
+    };
+
+
+    // DOUGHNUT -------------------------------------------------------------------------------------------------------------------------------------
+
+    var config = {
+        type: 'doughnut',
+        data: {
+            datasets: [{
+                data: [
+                    30,
+                    15,
+                    20,
+                    15,
+                    60,
+                ],
+                backgroundColor: [
+                    window.chartColors.red,
+                    window.chartColors.orange,
+                    window.chartColors.yellow,
+                    window.chartColors.green,
+                    window.chartColors.blue,
+                ],
+                label: 'Dataset 1'
+            }],
+            labels: [
+                "House",
+                "Marketing",
+                "Businesses",
+                "IT Solutions",
+                "Sales"
+            ]
+        },
+        options: {
+            responsive: true,
+            legend: {
+                position: 'top',
+            },
+            title: {
+                display: true,
+                text: 'Services Categories'
+            },
+            animation: {
+                animateScale: true,
+                animateRotate: true
+            }
+        }
+    };
+
+
+    // BASIC LINE -------------------------------------------------------------------------------------------------------------------------------------
+
+     var config2 = {
+         type: 'line',
+         data: {
+             labels: [{% for acc in graph_date_list %}"{{ acc.date }}",{% endfor %}],
+             datasets: [{
+                 label: "Sent",
+                 backgroundColor: window.chartColors.blue,
+                 borderColor: window.chartColors.blue,
+                  data: [{% for acc in graph_date_list %}"{{ acc.total_sent }}",{% endfor %}],
+                 fill: false,
+             }, {
+                 label: "Received",
+                 fill: false,
+                 backgroundColor: window.chartColors.black,
+                 borderColor: window.chartColors.black,
+                 data: [{% for acc in graph_date_list %}"{{ acc.total_received }}",{% endfor %}],
+             }]
+         },
+         options: {
+             responsive: true,
+             title:{
+                 display:true,
+                 text:'Status'
+             },
+             tooltips: {
+                 mode: 'index',
+                 intersect: false,
+             },
+             hover: {
+                 mode: 'nearest',
+                 intersect: true
+             },
+             scales: {
+                 xAxes: [{
+                     display: true,
+                     scaleLabel: {
+                         display: true,
+                         labelString: 'Month'
+                     }
+                 }],
+                 yAxes: [{
+                     display: true,
+                     scaleLabel: {
+                         display: true,
+                         labelString: 'Value'
+                     }
+                 }]
+             }
+         }
+     };
+
+
+
+    // -------------------------------------------------------------------------------------------------------------------------------------
+
+    window.onload = function() {
+
+        // DOUGHNUT
+        var ctx = document.getElementById("chart-area").getContext("2d");
+        window.myDoughnut = new Chart(ctx, config);
+        // BAR
+        var ctx2 = document.getElementById("canvas").getContext("2d");
+        window.myBar = new Chart(ctx2, {
+            type: 'bar',
+            data: barChartData,
+            options: {
+                responsive: true,
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Countries'
+                }
+            }
+        });
+        // LINE
+        var ctx3 = document.getElementById("canvas-line").getContext("2d");
+        window.myLine = new Chart(ctx3, config2);
+
+    };
+
+</script>
+
+{% endblock %}

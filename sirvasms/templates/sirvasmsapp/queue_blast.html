@@ -1,0 +1,128 @@
+{% extends "sirvasmsapp/base.html" %}
+{% load staticfiles %}
+<!-- Contents-->
+{% block contents %}
+
+
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <h1>
+      <small>Queues</small>
+    </h1>
+  <ol class="breadcrumb">
+      <li><a href="#"><i class="fa fa-calendar"></i> {{ date_from }}</a></li>
+      <li class="active">{{ date_to }} &nbsp;&nbsp;&nbsp; </li> 
+     <a href="#" data-toggle="modal" data-target="#modal-daterange" class="btn btn-primary  btn-sm btn-flat">Search</a>
+  </ol>
+  </section>
+
+  <!-- Main content -->
+  <section class="content container-fluid">
+
+   <div class="box">
+    <div class="box-header">
+      <h3 class="box-title"><b> SMS Blast Queues </b></h3>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body table-responsive">
+
+          <table id="dataTables-example" class="table table-bordered table-hover">
+            <thead>
+            <tr>
+              <th>ID</th>
+              <th>Date</th>
+              <th>Tag</th>
+              <th>Message</th>
+              <th>Total</th>
+              <th>Sent</th>
+              <th>Failed</th>
+              <th>Success</th>
+              <th>Progress</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+            </thead>
+
+                <tbody>
+
+                {% if queueblast_list %}
+                  {% for acc in queueblast_list %}
+                  <tr class="odd gradeX">
+                        <td>{{ acc.id }}</td>
+                        <td>{{ acc.date|date:"m-d-Y h:i:s A" }}</td>
+                        <td>{{ acc.tag }}</td>
+                        <td>{{ acc.message|truncatechars:30 }}</td>
+                        <td>{{ acc.total }}</td>
+                        <td>{{ acc.sent }}</td>
+                        <td>{{ acc.failed }}</td>
+                        <td>{{ acc.success }}</td>
+
+                        <td>
+                          <div class="progress progress-xs progress-striped active">
+                            <div class="progress-bar progress-bar-primary" style="width:{{ acc.percent }}%"></div>
+                          </div>
+                        </td>
+
+                        {% if acc.status == "Finish" %}
+                        <td><a class="btn btn-block btn-social btn-twitter btn-xs"><i class="fa fa-check"></i> {{ acc.status }}</a></td>
+                        {% else %}
+                        <td><a class="btn btn-block btn-social btn-google btn-xs"><i class="fa fa-refresh"></i> {{ acc.status }}</a></td>
+                        {% endif %}
+
+                        {% if acc.action == "Done" %}
+                        <td><a class="btn btn-block btn-social btn-twitter btn-xs"><i class="fa fa-check"></i> {{ acc.action }}</a></td>
+                        {% else %}
+                        <td><a href="/portal/queue_blast/resend/{{ acc.tag }}" class="btn btn-block btn-social btn-google btn-xs"><i class="fa fa-refresh"></i> {{ acc.action }}</a></td>
+                        {% endif %}
+
+                  </tr>
+
+                  {% endfor %}
+                {% else %}
+                    <p></p>
+                {% endif %}
+
+                </tbody>
+
+          </table>
+
+    </div>
+    <!-- /.box-body -->
+  </div>
+  <!-- /.box -->
+
+
+  </section>
+
+
+
+
+
+</div>
+<!-- /.content-wrapper -->
+{% endblock %}
+
+
+
+
+
+
+
+
+
+<!-- Agent JS -->
+{% block script %}
+<script>
+$(document).ready(function() {
+    $('#dataTables-example').DataTable({
+        responsive: true,
+        "pageLength": 15,
+        "lengthMenu": [ 10, 15, 25, 50, 75, 100 ],
+        "order": [[ 0, "desc" ]]
+    });
+});
+</script>
+{% endblock %}
+
+
+

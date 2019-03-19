@@ -1,0 +1,66 @@
+{% extends "chatbotapp/base.html" %}
+{% load staticfiles %}
+<!-- Contents-->
+{% block contents %}
+
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <h1>
+      <small> AXY Chatbot Demo</small>
+    </h1>
+    <ol class="breadcrumb">
+      <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+      <li class="active">Demo</li>
+    </ol>
+  </section>
+
+  <!-- Main content -->
+  <section class="content container-fluid">
+    
+     <div class="row">
+     
+      <div class="col-lg-3 col-xs-6">
+          <div class="botui-app-container" id="hello-world">
+            <bot-ui></bot-ui>
+          </div>
+      </div>
+        
+    </div>
+    
+    <script src="{% static "/dist/js/bot-ui-vue.js" %}"></script>
+    <script src="{% static "/dist/js/bot-ui.js" %}"></script>
+    
+    <script>
+      
+    var botui = new BotUI('hello-world');
+      
+      
+  // Asking Question
+
+      botui.message.add({ // show a message
+        delay: 1000,
+        loading: true,
+        content: "Hi I'm Axy! How can I help you?"
+      }).then(function() { // wait till its shown
+        return botui.action.text({ // show 'text' action
+          action: {
+            placeholder: 'Write a message..'
+          }
+        });
+      }).then(function(res) { // get the result
+        console.log(res.value);
+        send_message(res.value)
+      });
+
+      
+      
+        
+    </script>
+
+
+  </section>
+
+</div>
+<!-- /.content-wrapper -->
+
+{% endblock %}

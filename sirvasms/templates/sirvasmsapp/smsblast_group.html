@@ -1,0 +1,126 @@
+{% extends "sirvasmsapp/base.html" %}
+{% load staticfiles %}
+<!-- Contents-->
+{% block contents %}
+
+
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <h1>
+      <small>SMS Blasting</small>
+    </h1>
+  <ol class="breadcrumb">
+      <li><a href="#"><i class="fa fa-calendar"></i> {{ date_from }}</a></li>
+      <li class="active">{{ date_to }} &nbsp;&nbsp;&nbsp; </li> 
+     <a href="#" data-toggle="modal" data-target="#modal-daterange" class="btn btn-primary  btn-sm btn-flat">Search</a>
+  </ol>
+  </section>
+
+
+  <div class="col-md-6">
+
+
+  <!-- Main content -->
+  <section class="content container-fluid">
+
+   <div class="box">
+    <div class="box-header">
+      <h3 class="box-title"><b> SMS Blast Group </b></h3>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body table-responsive">
+
+            <form role="form" method="post" action="/smsblast_group_submit/" enctype="multipart/form-data"> {% csrf_token %}
+              <div class="box-body">
+
+                <div class="form-group">
+
+                    <label>PROVIDER</label>
+                    <select class="form-control select2" id="groups" data-placeholder="Select a GoIP" name="provider" style="width: 100%;">
+                      <option>BLASTING</option>
+                      <option>SPECIAL1</option>
+                      <option>SPECIAL2</option>
+                    </select>
+
+                </div>
+
+                <div class="form-group">
+                  <label for="exampleInputEmail1">Tag</label>
+                  <input type="text" class="form-control" name="tag" id="InputName" placeholder="Enter Tag Name" maxlength="20">
+                </div>
+
+                <div class="form-group">
+
+                  <label>Contacts Group</label>
+                  <select class="form-control select2" id="groups" multiple="multiple" data-placeholder="Select a Group" name="groups[]" style="width: 100%;">
+                    {% if group_list %} <!-- If Access Recrords exist in views.py -->
+                    {% for acc in group_list %}
+                        <option>{{ acc }}</option>
+                    {% endfor %}
+                  {% else %}
+                      <p>No Data</p>
+                  {% endif %}
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label></br>Message:</label>
+                  <textarea class="form-control" rows="5" name="message" placeholder="Enter Message ..."></textarea>
+                </div>
+
+              </div>
+
+
+
+              <!-- /.box-body -->
+
+              <div class="box-footer">
+                <button type="submit" class="btn btn-primary" onclick="$getgroups">Submit</button>
+              </div>
+            </form>
+            {{ status }}
+
+    </div>
+    <!-- /.box-body -->
+  </div>
+  <!-- /.box -->
+
+
+  </section>
+
+  </div>
+
+
+
+
+
+</div>
+<!-- /.content-wrapper -->
+{% endblock %}
+
+
+
+
+
+
+
+
+
+<!-- Agent JS -->
+{% block script %}
+<script>
+$(document).ready(function() {
+    $('#dataTables-example').DataTable({
+        responsive: true,
+        "pageLength": 15,
+        "lengthMenu": [ 10, 15, 25, 50, 75, 100 ],
+        "order": [[ 0, "desc" ]]
+    });
+});
+
+
+</script>
+{% endblock %}
+
+
+

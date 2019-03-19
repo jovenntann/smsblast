@@ -1,0 +1,98 @@
+{% extends "chatbotapp/base.html" %}
+{% load staticfiles %}
+<!-- Contents-->
+{% block contents %}
+
+ <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <h1>
+      Sentence
+      <small>Please enter Intent , Entity and Sentence</small>
+    </h1>
+    <ol class="breadcrumb">
+      <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+      <li class="active">Dashboard</li>
+    </ol>
+  </section>
+
+  <div class="col-md-6">
+
+  <section class="content container-fluid">
+
+      <!-- /.box-header -->
+      <div class="box-body">
+
+            <form class="form-horizontal" method="post" action="/sentences/edit/submit/" id="loginform" class="form-group" role="form"> {% csrf_token %}
+               <input type="hidden" name="id" value="{{ info.id }}">
+
+              <div class="form-group">
+                <label for="inputQuestion" class="col-sm-2 control-label">Intent</label>
+
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" id="inputIntent" placeholder="Intent" name="intent" value="{{ info.intent }}" ></input>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="inputQuestion" class="col-sm-2 control-label">Entity</label>
+
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" id="inputEntity" placeholder="Entity" name="entity" value="{{ info.entity }}"></input>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label for="inputAnswer" class="col-sm-2 control-label">Value</label>
+
+                <div class="col-sm-10">
+                  <textarea type="text" class="form-control" id="inputSentence" placeholder="Sentence" name="sentence">{{ info.sentence }}</textarea>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                  <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+              </div>
+            </form>
+          </div>
+          <!-- /.tab-pane -->
+
+    </div>
+    <!-- /.box -->
+
+  </section>
+
+  </div>
+  <!-- col-9 -->
+
+  <div class="col-md-6">
+  </div>
+
+
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+<!-- Agent JS -->
+{% block script %}
+<script src="{% static "/dist/js/custom.js" %}"></script>
+
+<script>
+$(document).ready(function() {
+    $('#dataTables-example').DataTable({
+        responsive: true,
+        "pageLength": 15,
+        "lengthMenu": [ 10, 15, 25, 50, 75, 100 ],
+        "order": [[ 0, "asc" ]]
+    });
+});
+</script>
+{% endblock %}
