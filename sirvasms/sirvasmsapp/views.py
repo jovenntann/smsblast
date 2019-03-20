@@ -155,16 +155,16 @@ def home(request):
 
     current_url = "/portal/home"
 
-    sms_sent = Queue.objects.filter(Q(dateSent__range=[date_from, date_to]),Q(flag__icontains=1))
+    sms_sent = Queue.objects.filter(Q(dateSent__range=[date_from, date_to])&Q(flag=1))
     sms_sent = sms_sent.count()
 
     sms_received = Received.objects.filter(Q(date__range=[date_from, date_to]))
     sms_received = sms_received.count()
 
-    sms_queue = Queue.objects.filter(Q(dateSent__range=[date_from, date_to]),Q(flag=0))
+    sms_queue = Queue.objects.filter(Q(dateSent__range=[date_from, date_to])&Q(flag=0))
     sms_queue = sms_queue.count()
 
-    sms_failed = Queue.objects.filter(Q(dateSent__range=[date_from, date_to]),Q(flag=2))
+    sms_failed = Queue.objects.filter(Q(dateSent__range=[date_from, date_to])&Q(flag=2))
     sms_failed = sms_failed.count()
 
     # GOIP LISTS
@@ -670,16 +670,16 @@ def ajax_queue_status(request):
     date_from = str(daterange_get.date_from)
     date_to = str(daterange_get.date_to)
 
-    sms_sent = Queue.objects.filter(Q(dateSent__range=[date_from, date_to]),Q(flag__icontains=1))
+    sms_sent = Queue.objects.filter(Q(dateSent__range=[date_from, date_to])&Q(flag=1))
     sms_sent = sms_sent.count()
 
     sms_received = Received.objects.filter(Q(date__range=[date_from, date_to]))
     sms_received = sms_received.count()
 
-    sms_queue = Queue.objects.filter(Q(dateSent__range=[date_from, date_to]),Q(flag=0))
+    sms_queue = Queue.objects.filter(Q(dateSent__range=[date_from, date_to])&Q(flag=0))
     sms_queue = sms_queue.count()
 
-    sms_failed = Queue.objects.filter(Q(dateSent__range=[date_from, date_to]),Q(flag=2))
+    sms_failed = Queue.objects.filter(Q(dateSent__range=[date_from, date_to])&Q(flag=2))
     sms_failed = sms_failed.count()
 
     # # Customer Information

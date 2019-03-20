@@ -617,6 +617,13 @@ function send_message() {
             document.getElementById("sms_received").innerHTML  = data.sms_received;
             document.getElementById("sms_queue").innerHTML  = data.sms_queue;
             document.getElementById("sms_failed").innerHTML  = data.sms_failed;
+            // change background color
+            if (data.sms_queue>0) {
+              document.getElementById("sms_queue_class").className = "small-box bg-red";
+            } else {
+              document.getElementById("sms_queue_class").className = "small-box bg-blue";
+            }
+            
           }
     });
   }
