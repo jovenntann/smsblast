@@ -40,7 +40,7 @@
                 {% if contacts_list %} <!-- If Access Recrords exist in views.py -->
                   {% for acc in contacts_list %}
                   <tr class="odd gradeX">
-                        <td>{{ acc.name }}</td>
+                        <td><a href="/admin/sirvasmsapp/contact/{{ acc.id }}/change/">{{ acc.name }}</td>
                         <td>{{ acc.number }}</td>
                   </tr>
 
