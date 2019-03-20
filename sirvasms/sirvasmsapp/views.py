@@ -50,6 +50,9 @@ import re
 # Math
 import math
 
+# AJAX
+from django.http import JsonResponse
+
 def queue_message(tag,filename,request):
 
     df = pd.read_excel('/opt/djangoprojects/sirvasms/media/' + filename, sheet_name='Sheet1')
@@ -647,6 +650,57 @@ def contacts_submit(request):
             upload_contacts(group,filename,request)
 
             return HttpResponseRedirect('/portal/contacts/')
+
+
+
+@login_required
+def ajax_queue_status(request):
+
+    # Received Data from Ajax
+    # customer_id = request.GET['customer_id']
+    # message = request.GET['message']
+    # direction = request.GET['direction']
+    # date = now = datetime.datetime.now().strftime("%b. %d, %Y %I:%M %p")
+
+    # Get Current Logged-in User ID
+    current_user = request.user
+    user_id = current_user.id
+    
+    daterange_get = DateRange.objects.get(id=user_id)
+    date_from = str(daterange_get.date_from)
+    date_to = str(daterange_get.date_to)
+
+    sms_sent = Queue.objects.filter(Q(dateSent__range=[date_from, date_to]),Q(flag__icontains=1))
+    sms_sent = sms_sent.count()
+
+    sms_received = Received.objects.filter(Q(date__range=[date_from, date_to]))
+    sms_received = sms_received.count()
+
+    sms_queue = Queue.objects.filter(Q(dateSent__range=[date_from, date_to]),Q(flag=0))
+    sms_queue = sms_queue.count()
+
+    sms_failed = Queue.objects.filter(Q(dateSent__range=[date_from, date_to]),Q(flag=2))
+    sms_failed = sms_failed.count()
+
+    # # Customer Information
+    # customer_info = Customer.objects.get(id=customer_id)
+    # customer_name = customer_info.name
+
+    # # Get Current Logged-in User ID
+    # current_user = request.user
+    # user_id = current_user.id
+    # user_name = current_user.username
+
+    # Get Chatter Bot Reponse to User Text
+    # response = chatbot.get_response(message)
+    # response = str(response)
+
+    # Forward to JSON Request
+    json_data = {
+        'sms_sent':sms_sent,'sms_received':sms_received,'sms_queue':sms_queue,'sms_failed':sms_failed,
+    }
+
+    return JsonResponse(json_data)
 
 
 def error_404(request):

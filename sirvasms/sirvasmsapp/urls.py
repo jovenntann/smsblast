@@ -22,6 +22,8 @@ urlpatterns = [
   url(r'^smsblast_group_submit/$',views.smsblast_group_submit,name='smsblast_group_submit'),
   url(r'^contacts_submit/$',views.contacts_submit,name='contacts_submit'),
   url(r'^daterange/submit/$',views.daterange_submit,name='daterange_submit'),
+
+  url(r'^ajax_queue_status/$',views.ajax_queue_status,name='ajax_queue_status'),
 ]
 
 handler404 = views.error_404
