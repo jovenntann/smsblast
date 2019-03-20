@@ -52,14 +52,14 @@
                         <td>{{ acc.date|date:"m-d-Y h:i:s A" }}</td>
                         <td>{{ acc.tag }}</td>
                         <td>{{ acc.message|truncatechars:30 }}</td>
-                        <td>{{ acc.total }}</td>
-                        <td>{{ acc.sent }}</td>
-                        <td>{{ acc.failed }}</td>
-                        <td>{{ acc.success }}</td>
+                        <td id="{{ acc.id }}-total">{{ acc.total }}</td>
+                        <td id="{{ acc.id }}-sent">{{ acc.sent }}</td>
+                        <td id="{{ acc.id }}-failed">{{ acc.failed }}</td>
+                        <td id="{{ acc.id }}-success">{{ acc.success }}</td>
 
                         <td>
                           <div class="progress progress-xs progress-striped active">
-                            <div class="progress-bar progress-bar-primary" style="width:{{ acc.percent }}%"></div>
+                            <div id="{{ acc.id }}-percent" class="progress-bar progress-bar-primary" style="width:{{ acc.percent }}%"></div>
                           </div>
                         </td>
 
