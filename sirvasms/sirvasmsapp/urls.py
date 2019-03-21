@@ -24,6 +24,8 @@ urlpatterns = [
   url(r'^daterange/submit/$',views.daterange_submit,name='daterange_submit'),
 
   url(r'^ajax_queue_status/$',views.ajax_queue_status,name='ajax_queue_status'),
+
+  url(r'^export/csv/$', views.export_received_csv, name='export_received_csv'),
 ]
 
 handler404 = views.error_404

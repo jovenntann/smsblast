@@ -6,7 +6,8 @@
   <!-- Content Header (Page header) -->
   <section class="content-header">
     <h1>
-      <small>Received SMS</small>
+      <a href="{% url 'export_received_csv' %}" class="btn btn-primary  btn-sm btn-flat">Download CSV</a>
+      <small>Click here to download Export to CSV</small>
     </h1>
   <ol class="breadcrumb">
       <li><a href="#"><i class="fa fa-calendar"></i> {{ date_from }}</a></li>

@@ -53,6 +53,9 @@ import math
 # AJAX
 from django.http import JsonResponse
 
+# Export to CSV
+import csv
+
 def queue_message(tag,filename,request):
 
     df = pd.read_excel('/opt/djangoprojects/sirvasms/media/' + filename, sheet_name='Sheet1')
@@ -651,18 +654,32 @@ def contacts_submit(request):
 
             return HttpResponseRedirect('/portal/contacts/')
 
+def export_received_csv(request):
 
+    current_user = request.user
+    user_id = current_user.id
+
+    daterange_get = DateRange.objects.get(id=user_id)
+    date_from = str(daterange_get.date_from)
+    date_to = str(daterange_get.date_to)
+    
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="received.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['Date', 'From', 'Name', 'Destination', 'Message', 'MessageSid', 'Status'])
+    
+
+    Inbox = Received.objects.filter(Q(date__range=[date_from, date_to])).order_by('-id').values_list('date', 'from_number', 'name', 'to_number', 'message', 'MessageSid', 'status')
+
+    for i in Inbox:
+       writer.writerow([i[0], i[1], i[2].encode('ascii', 'ignore').decode('ascii'), i[3], i[4], i[5], i[6]])
+
+    return response
 
 @login_required
 def ajax_queue_status(request):
 
-    # Received Data from Ajax
-    # customer_id = request.GET['customer_id']
-    # message = request.GET['message']
-    # direction = request.GET['direction']
-    # date = now = datetime.datetime.now().strftime("%b. %d, %Y %I:%M %p")
-
-    # Get Current Logged-in User ID
     current_user = request.user
     user_id = current_user.id
     
@@ -682,20 +699,6 @@ def ajax_queue_status(request):
     sms_failed = Queue.objects.filter(Q(dateSent__range=[date_from, date_to])&Q(flag=2))
     sms_failed = sms_failed.count()
 
-    # # Customer Information
-    # customer_info = Customer.objects.get(id=customer_id)
-    # customer_name = customer_info.name
-
-    # # Get Current Logged-in User ID
-    # current_user = request.user
-    # user_id = current_user.id
-    # user_name = current_user.username
-
-    # Get Chatter Bot Reponse to User Text
-    # response = chatbot.get_response(message)
-    # response = str(response)
-
-    # Forward to JSON Request
     json_data = {
         'sms_sent':sms_sent,'sms_received':sms_received,'sms_queue':sms_queue,'sms_failed':sms_failed,
     }
