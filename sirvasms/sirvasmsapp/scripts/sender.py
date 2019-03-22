@@ -9,8 +9,10 @@ import json
 import pprint
 import re
 
-# 
 from multiprocessing import Process
+
+# URL Encoding
+import urllib
 
 def goip_send(provider,number,message,goip):
  
@@ -23,7 +25,10 @@ def goip_send(provider,number,message,goip):
     elif provider == 'SECIAL02':
         provider = 4
     else:
-        provider = 5
+        provider = 0
+
+    # Encode to URL Format
+    message = urllib.quote_plus(message)
 
     # Replace Provider
     url = "http://localhost/goip/en/dosend.php?USERNAME=root&PASSWORD=root&smsprovider=" + str(provider) + "&goipname=" + goip + "&smsnum=" + number + "&method=2&Memo=" + message
