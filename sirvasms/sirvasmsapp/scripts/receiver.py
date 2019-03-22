@@ -88,19 +88,24 @@ while True:
                 insertSMS(date, srcnum, to_number, msg, _id, 'Received')
                 updateStatus(_id,1)
 
+
+
                 # Forward SMS if to Special Number
+                srcnum = srcnum.replace('+639','09')
+                name = getName(srcnum)
+                
                 if to_number == 'GoIPD07':
                         forward_to = ['09331707870','09062131607']
                         count = 0
                         for i in forward_to:         
-                                results = goip_send(i,"From: " + str(srcnum) + "\n\n" + msg,3,'GoIPD07')
+                                results = goip_send(i,"From: " + str(srcnum) + "\nName: " + name + "\n\n" + msg,3,'GoIPD07')
                                 count = count + 1
                                 print(results)
                 elif to_number == 'GoIPD08':
                         forward_to = ['09331707870','09062131607']
                         count = 0
                         for i in forward_to:         
-                                results = goip_send(i,"From: " + str(srcnum) + "\n\n" + msg,4,'GoIPD08')
+                                results = goip_send(i,"From: " + str(srcnum) + "\nName: " + name + "\n\n" + msg,4,'GoIPD08')
                                 count = count + 1
                                 print(results)
 
