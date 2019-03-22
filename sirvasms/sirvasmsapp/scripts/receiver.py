@@ -11,7 +11,7 @@ import re
 
 def goip_send(number,message,provider,goip):
  
-    url = "http://localhost/goip/en/dosend.php?USERNAME=root&PASSWORD=root&smsprovider=" + str(provider) + "&goipname=" + goip + "&smsnum=" + number + "&method=2&Memo=" + message
+    url = "http://localhost/goip/en/dosend.php?USERNAME=root&PASSWORD=root&smsprovider=" + str(provider) + "&goipname=" + goip + "&smsnum=" + number + "&method=2&Memo=" + str(message)
     reply = requests.post(url)
     messageid = re.search(r'messageid=(.*?)&USERNAME',reply.text).group(1)
 
