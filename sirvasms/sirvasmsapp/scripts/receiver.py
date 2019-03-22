@@ -9,22 +9,14 @@ import json
 import pprint
 import re
 
-def goip_send(number,message,goip):
+def goip_send(number,message,provider,goip):
  
-    if goip == 'GoIPD07':
-        provider = 3
-    elif provider == 'GoIPD08':
-        provider = 4
-
-    # Replace Provider
     url = "http://localhost/goip/en/dosend.php?USERNAME=root&PASSWORD=root&smsprovider=" + str(provider) + "&goipname=" + goip + "&smsnum=" + number + "&method=2&Memo=" + message
     reply = requests.post(url)
-    # print(reply.text)
     messageid = re.search(r'messageid=(.*?)&USERNAME',reply.text).group(1)
 
     send_url = "http://localhost/goip/en/resend.php?messageid=" + messageid + "&USERNAME=root&PASSWORD=root"
     send_reply = requests.post(send_url)
-    # print(send_reply.text)
 
     if 'errorstatus' in send_reply.text:
         status = re.search(r'errorstatus:(.*)',send_reply.text).group(1)
@@ -89,7 +81,6 @@ while True:
                 msg = row[3].encode('ascii', 'ignore').decode('ascii')
                 date = str(row[4])
                 to_number = str(row[6])
-
                 msg = re.sub(r'.*] ', '', msg)
 
                 print(_id + ' | ' + date + ' | ' + srcnum + ' | ' + msg)
@@ -97,10 +88,21 @@ while True:
                 insertSMS(date, srcnum, to_number, msg, _id, 'Received')
                 updateStatus(_id,1)
 
-                # Forward SMS
-                results = goip_send('09331707870',msg,'GoIPD07')
-                print(results)
-
+                # Forward SMS if to Special Number
+                if to_number == 'GoIPD07':
+                        forward_to = ['09331707870','09062131607']
+                        count = 0
+                        for i in forward_to:         
+                                results = goip_send(i[count],msg,7,'GoIPD07')
+                                count = count + 1
+                                print(results)
+                elif to_number == 'GoIPD08':
+                        forward_to = ['09331707870','09062131607']
+                        count = 0
+                        for i in forward_to:         
+                                results = goip_send(i[count],msg,7,'GoIPD08')
+                                count = count + 1
+                                print(results)
 
 
 
