@@ -36,20 +36,26 @@ def goip_send(provider,number,message,goip):
     # print(reply.text)
     messageid = re.search(r'messageid=(.*?)&USERNAME',reply.text).group(1)
 
-    send_url = "http://localhost/goip/en/resend.php?messageid=" + messageid + "&USERNAME=root&PASSWORD=root"
-    send_reply = requests.post(send_url)
-    # print(send_reply.text)
+    try:
+        send_url = "http://localhost/goip/en/resend.php?messageid=" + messageid + "&USERNAME=root&PASSWORD=root"
+        send_reply = requests.post(send_url,timeout=0.1)
+        # print(send_reply.text)
 
-    if 'errorstatus' in send_reply.text:
-        status = re.search(r'errorstatus:(.*)',send_reply.text).group(1)
+        if 'errorstatus' in send_reply.text:
+            status = re.search(r'errorstatus:(.*)',send_reply.text).group(1)
+            status = 'Failed' ##### Revert to Failed
+        elif 'ok(' in send_reply.text:
+            status = 'Sent'
+        else:
+            status = 'Failed' ##### Revert to Failed
+
+        return {'messageid':messageid,'status':status}
+
+    except requests.exceptions.Timeout:
+        
         status = 'Failed' ##### Revert to Failed
-    elif 'ok(' in send_reply.text:
-        status = 'Sent'
-    else:
-        status = 'Failed' ##### Revert to Failed
-
-    return {'messageid':messageid,'status':status}
-
+        return {'messageid':messageid,'status':status}
+        
 def update_sending(tag):
 
 
