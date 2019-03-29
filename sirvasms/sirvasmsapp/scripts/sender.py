@@ -38,7 +38,7 @@ def goip_send(provider,number,message,goip):
 
     try:
         send_url = "http://localhost/goip/en/resend.php?messageid=" + messageid + "&USERNAME=root&PASSWORD=root"
-        send_reply = requests.post(send_url,timeout=0.1)
+        send_reply = requests.post(send_url,timeout=0.10)
         # print(send_reply.text)
 
         if 'errorstatus' in send_reply.text:
