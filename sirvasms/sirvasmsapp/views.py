@@ -390,6 +390,17 @@ def contacts_list(request,group):
     return render(request,'sirvasmsapp/contacts_list.html',context=context)
 
 @login_required
+def contacts_delete(request,group):
+
+    Contact.objects.filter(group=group).delete()
+
+    # Get Current Logged-in User ID
+    current_user = request.user
+    user_id = current_user.id
+       
+    return HttpResponseRedirect('/portal/contacts/') 
+
+@login_required
 def queue(request):
   
     # Get Current Logged-in User ID
