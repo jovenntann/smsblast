@@ -107,7 +107,7 @@ while True:
                                 count = count + 1
                                 print(results)
                 elif to_number == 'GoIPD08':
-                        forward_to = ['09331707870','09062131607']
+                        forward_to = ['09331707870','09669713416','09367725681','09255882626']
                         count = 0
                         for i in forward_to:         
                                 results = goip_send(i,"From: " + str(srcnum) + "\nName: " + name + "\n\n" + msg,4,'GoIPD08')
