@@ -9,14 +9,12 @@ https://docs.djangoproject.com/en/1.11/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.11/ref/settings/
 """
-
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEMPLATE_DIR = os.path.join(BASE_DIR,"templates")
 STATIC_DIR = os.path.join(BASE_DIR,"static")
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
@@ -27,7 +25,7 @@ SECRET_KEY = 'qe2ivlt5!%ti_z1is7d1uph@6^)$4uh1msr%5i+u&=5j&gk^7!'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost','127.0.0.1','10.20.26.200','192.168.254.200']
+ALLOWED_HOSTS = ['localhost','127.0.0.1','10.20.26.200','192.168.254.200','192.168.1.220']
 
 
 # Application definition

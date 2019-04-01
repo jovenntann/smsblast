@@ -12,6 +12,9 @@ urlpatterns = [
   url(r'^sent/$',views.sent,name='sent'),
   url(r'^contacts/$',views.contacts,name='contacts'),
   url(r'^contacts/list/(?P<group>.*)$', views.contacts_list,name='contacts_list'),
+  url(r'^contacts/delete/(?P<group>.*)$', views.contacts_delete,name='contacts_delete'),
+
+
   url(r'^queue/$',views.queue,name='queue'),
   url(r'^queue_blast/$',views.queue_blast,name='queue_blast'),
   url(r'^queue_blast/resend/(?P<tag>.*)$', views.queue_blast_resend,name='queue_blast_resend'),

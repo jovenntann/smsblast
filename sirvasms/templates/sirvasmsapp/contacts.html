@@ -33,6 +33,7 @@
               <th>Group Name</th>
               <th>Date</th>
               <th>Total</th>
+              <th>Action</th>
             </tr>
             </thead>
 
@@ -44,6 +45,7 @@
                         <td><a href="/portal/contacts/list/{{ acc.group }}">{{ acc.group }}</a></td>
                         <td>{{ acc.date|date:"m-d-Y h:i:s A" }}</td>
                         <td>{{ acc.count }}</td>
+                        <td><a href="/portal/contacts/delete/{{ acc.group }}" class="btn btn-primary  btn-sm btn-flat">Delete Group</a></td>
                   </tr>
 
                   {% endfor %}

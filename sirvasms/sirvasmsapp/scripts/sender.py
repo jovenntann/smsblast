@@ -41,6 +41,7 @@ def goip_send(provider,number,message,goip):
     send_url = "http://localhost/goip/en/resend.php?messageid=" + messageid + "&USERNAME=root&PASSWORD=root"
     send_reply = requests.post(send_url)
     # print(send_reply.text)
+    
 
     if 'errorstatus' in send_reply.text:
         status = 'Failed'
@@ -206,19 +207,5 @@ for goip in onlinegoip:
     process.start()
     count = count + 1
     
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
