@@ -614,6 +614,10 @@ def smsblast_group_submit(request):
     current_user = request.user
     user_id = current_user.username
 
+    online_goip_list = Goip.objects.filter().order_by('id')
+    online_goip_list_total = len(online_goip_list)
+    online_goip_list_count = 0
+
     if request.method == 'POST':
         tag = request.POST['tag']
         provider = request.POST['provider']
@@ -636,8 +640,16 @@ def smsblast_group_submit(request):
                     else:
                         provider = 'NONE'
 
-                user_object = Queue(provider = provider, name = x.name, to_number = x.number, user = user_id, message = message, goip = "", tag = tag)
+                # Assign GoIP
+                if online_goip_list_count >= online_goip_list_total:
+                    online_goip_list_count = 0
+
+                goip = online_goip_list[online_goip_list_count].name
+                online_goip_list_count = online_goip_list_count + 1
+                
+                user_object = Queue(provider = provider, name = x.name, to_number = x.number, user = user_id, message = message, goip = goip, tag = tag)
                 user_object.save()
+
 
         # Save record to Queue Blast Tables
         user_object = QueueBlast(tag = tag, message = message, status = 'Sending')

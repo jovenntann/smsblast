@@ -41,7 +41,6 @@ def goip_send(provider,number,message,goip):
     send_url = "http://localhost/goip/en/resend.php?messageid=" + messageid + "&USERNAME=root&PASSWORD=root"
     send_reply = requests.post(send_url)
     # print(send_reply.text)
-    
 
     if 'errorstatus' in send_reply.text:
         status = 'Failed'
@@ -97,94 +96,42 @@ def onlineGoIP():
 
         return(onlineGoIP)
 
-def getQueues():
-
-    onlineGoIPList = onlineGoIP()
-
-    # GET ALL MESSAGES ON QUEUE
-    conn = mysql.connector.Connect(host='localhost',user='root',password='09106850351',database='goip')
-    cursor = conn.cursor()
-    sql = "SELECT * FROM sirvasmsapp_queue WHERE flag = 0 AND provider NOT LIKE 'SPECIAL%';" 
-    cursor.execute(sql)
-    result = cursor.fetchall()
-
-    # QUEUE ASSIGNMENT TO GOIP
-    QueueLists = [] 
-
-    # COUNT TOTAL ONLINE GOIP
-    onlineGoIPTotal = len(onlineGoIPList) - 1
-    # SET GOIP COUNT 0
-    onlineGoIPCount = 0
-
-    for row in result:
-
-        # RESET THE CYCLE
-        if onlineGoIPCount > onlineGoIPTotal:
-            onlineGoIPCount = 0
-
-        # SET ID
-        id = row[0] 
-        # GET ASSIGN GOIP
-        goip = onlineGoIPList[onlineGoIPCount]
-        # ASSIGN NEXT GOIP
-        onlineGoIPCount = onlineGoIPCount + 1
-        # APPEND TO LIST
-        QueueLists.append({'id':id,'goip':goip})
-
-    return QueueLists
-
 def processMessage(goip):
-
 
         while True:
 
-            # GET ALL SMS ON QUEUE THEN CREATE A LIST
-            QueueLists = getQueues()
+            conn = mysql.connector.Connect(host='localhost',user='root',password='09106850351',database='goip')
+            cursor = conn.cursor()
+            sql = "SELECT * FROM sirvasmsapp_queue WHERE flag = 0 AND goip = '{}';".format(goip)
+            cursor.execute(sql)
+            row = cursor.fetchone()
 
-            # IF QUEUE LIST HAS ITEM
-            if QueueLists:
-                
-                # GET THE INDEX BASE ON GOIP NAME
-                queue_index = next((index for (index, d) in enumerate(QueueLists) if d["goip"] == goip), None)
-                # IF GOIP NAME IS ON THE LIST
-                if queue_index is not None:
-                    # GET QUEUE SMS ID
-                    id = QueueLists[queue_index]['id']
-                    # REMOVE FROM THE LIST
-                    QueueLists.pop(queue_index)
-                    # GET ONE RECORD FROM QUEUE
-                    conn = mysql.connector.Connect(host='localhost',user='root',password='09106850351',database='goip')
-                    cursor = conn.cursor()
-                    sql = "SELECT * FROM sirvasmsapp_queue WHERE id = '{}';".format(id)
-                    cursor.execute(sql)
-                    row = cursor.fetchone()
+            if row: # READ THE RECORD
+                    id = str(row[0])
+                    date = str(row[1])
+                    provider = str(row[2])
+                    to_number = str(row[3])
+                    user = str(row[4])
+                    message = str(row[5])
+                    flag = str(row[6])
+                    tag = str(row[7])
+                    # UPDATE RECORD QUEUE STATUS
+                    updateStatus(id,goip,3)
+                    # CALL SMS API
+                    results = goip_send(provider,to_number,message,goip)
+                    print(id + ' | ' + date + ' | ' + provider + ' | ' + to_number+ ' | ' + user + ' | ' + message[:15] + ' | ' + tag + ' | ' + goip + ' | ' + flag + ' | ' + str(datetime.datetime.now()))
+                    
+                    # UPDATE QUEUE STATUS
+                    if results['status'] == 'Failed':
+                        updateStatus(id,goip,2)
+                    elif results['status'] == 'Sent':
+                        updateStatus(id,goip,1)
 
-                    if row: # READ THE RECORD
-                            id = str(row[0])
-                            date = str(row[1])
-                            provider = str(row[2])
-                            to_number = str(row[3])
-                            user = str(row[4])
-                            message = str(row[5])
-                            flag = str(row[6])
-                            tag = str(row[7])
-                            # UPDATE RECORD QUEUE STATUS
-                            updateStatus(id,goip,3)
-                            # CALL SMS API
-                            results = goip_send(provider,to_number,message,goip)
-                            print(id + ' | ' + date + ' | ' + provider + ' | ' + to_number+ ' | ' + user + ' | ' + message[:15] + ' | ' + tag + ' | ' + goip + ' | ' + flag + ' | ' + str(datetime.datetime.now()))
-                            
-                            # UPDATE QUEUE STATUS
-                            if results['status'] == 'Failed':
-                                updateStatus(id,goip,2)
-                            elif results['status'] == 'Sent':
-                                updateStatus(id,goip,1)
+                    # UPDATE WHICH TAG IS SENDING
+                    update_sending(tag)
 
-                            # UPDATE WHICH TAG IS SENDING
-                            update_sending(tag)
-
-                    else:
-                            update_sending('Clear')
+            else:
+                    update_sending('Clear')
 
 
 ###########################################################################################################
@@ -207,5 +154,19 @@ for goip in onlinegoip:
     process.start()
     count = count + 1
     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
