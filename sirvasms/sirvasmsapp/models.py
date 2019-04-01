@@ -21,7 +21,6 @@ class Received(models.Model):
 class Queue(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     dateSent = models.DateTimeField(auto_now_add=True)
-    provider = models.CharField(max_length=20)
     name = models.CharField(max_length=80)
     to_number =  models.CharField(max_length=20)
     user = models.CharField(max_length=80)

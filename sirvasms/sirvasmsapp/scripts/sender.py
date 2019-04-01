@@ -15,24 +15,13 @@ from multiprocessing import Process, current_process
 import urllib
 
 
-def goip_send(provider,number,message,goip):
+def goip_send(number,message,goip):
  
-    if provider == 'GLOBE':
-        provider = 1
-    elif provider == 'SMART':
-        provider = 2
-    elif provider == 'SPECIAL01':
-        provider = 3
-    elif provider == 'SECIAL02':
-        provider = 4
-    else:
-        provider = 0
-
     # ENCODE MESSAGE TO URL FORMAT
     message = urllib.quote_plus(message)
 
     # FORMAT SENDING URL
-    url = "http://localhost/goip/en/dosend.php?USERNAME=root&PASSWORD=root&smsprovider=" + str(provider) + "&goipname=" + goip + "&smsnum=" + number + "&method=2&Memo=" + message
+    url = "http://localhost/goip/en/dosend.php?USERNAME=root&PASSWORD=root&smsprovider=1&goipname=" + goip + "&smsnum=" + number + "&method=2&Memo=" + message
     reply = requests.post(url)
     # print(reply.text)
     messageid = re.search(r'messageid=(.*?)&USERNAME',reply.text).group(1)
@@ -106,32 +95,33 @@ def processMessage(goip):
             cursor.execute(sql)
             row = cursor.fetchone()
 
-            if row: # READ THE RECORD
-                    id = str(row[0])
-                    date = str(row[1])
-                    provider = str(row[2])
-                    to_number = str(row[3])
-                    user = str(row[4])
-                    message = str(row[5])
-                    flag = str(row[6])
-                    tag = str(row[7])
-                    # UPDATE RECORD QUEUE STATUS
-                    updateStatus(id,goip,3)
-                    # CALL SMS API
-                    results = goip_send(provider,to_number,message,goip)
-                    print(id + ' | ' + date + ' | ' + provider + ' | ' + to_number+ ' | ' + user + ' | ' + message[:15] + ' | ' + tag + ' | ' + goip + ' | ' + flag + ' | ' + str(datetime.datetime.now()))
-                    
-                    # UPDATE QUEUE STATUS
-                    if results['status'] == 'Failed':
-                        updateStatus(id,goip,2)
-                    elif results['status'] == 'Sent':
-                        updateStatus(id,goip,1)
+            if row:
 
-                    # UPDATE WHICH TAG IS SENDING
-                    update_sending(tag)
+                id = str(row[0])
+                date = str(row[1])
+                provider = str(row[2])
+                to_number = str(row[3])
+                user = str(row[4])
+                message = str(row[5])
+                flag = str(row[6])
+                tag = str(row[7])
+
+                # CALL SMS API
+                results = goip_send(to_number,message,goip)
+                print(id + ' | ' + date + ' | ' + provider + ' | ' + to_number+ ' | ' + user + ' | ' + message[:15] + ' | ' + tag + ' | ' + goip + ' | ' + flag + ' | ' + str(datetime.datetime.now()))
+                
+                # UPDATE QUEUE STATUS
+                if results['status'] == 'Failed':
+                    updateStatus(id,goip,2)
+                elif results['status'] == 'Sent':
+                    updateStatus(id,goip,1)
+
+                # UPDATE WHICH TAG IS SENDING
+                update_sending(tag)
 
             else:
-                    update_sending('Clear')
+                
+                update_sending('Clear')
 
 
 ###########################################################################################################
