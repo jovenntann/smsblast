@@ -63,30 +63,29 @@ def queue_message(tag,filename,request):
     current_user = request.user
     user_id = current_user.username
 
+    goip_blasting = ['GoIPA01','GoIPA02','GoIPA03','GoIPA04','GoIPA05','GoIPA06','GoIPA07','GoIPA08',
+                     'GoIPB01','GoIPB02','GoIPB03','GoIPB04','GoIPB05','GoIPB06','GoIPB07','GoIPB08',
+                     'GoIPC01','GoIPC02','GoIPC03','GoIPC04','GoIPC05','GoIPC06','GoIPC07','GoIPC08',
+                     'GoIPD01','GoIPD02','GoIPD03','GoIPD04','GoIPD05','GoIPD06']
+
+    online_goip_list = Goip.objects.filter(name__in=goip_blasting).order_by('id')
+    online_goip_list_total = len(online_goip_list)
+    online_goip_list_count = 0
+
     for i in df.index:
 
         number = df['number'][i]
         content = df['content'][i]
 
-        # Add Zero if Number is Incomplete
-        if len(str(number)) == 10:
-            number = '0' + str(df['number'][i])
+        # ASSIGN GOIP
+        if online_goip_list_count >= online_goip_list_total:
+            online_goip_list_count = 0
 
-        # Select Which Provider Based on Prefix
-        if len(str(number)) < 5:
-            provider = 'NONE'
-        elif Prefix.objects.filter(prefix=number[:4]).exists():
-            provider_get = Prefix.objects.get(prefix=number[:4])
-            provider = provider_get.provider
-        else:
-            provider = 'NONE'
-
-        goip = "" # GOIP VALUE
+        goip = online_goip_list[online_goip_list_count].name
+        online_goip_list_count = online_goip_list_count + 1
             
-        user_object = Queue(provider = provider, to_number = number, user = user_id, message = content, goip = goip, tag = tag)
+        user_object = Queue(to_number = number, user = user_id, message = content, goip = goip, tag = tag)
         user_object.save()
-
-        # print("Number: " + str(number) + " Provider: " + provider + " Content: " + content + " Count:" + str(i))
 
 def upload_contacts(group,filename,request):
 
@@ -95,20 +94,13 @@ def upload_contacts(group,filename,request):
     current_user = request.user
     user_id = current_user.username
 
-
     for i in df.index:
 
-        # number = '0' + str(df['number'][i])
         name = df['name'][i]
         number = df['number'][i]
 
-        if len(str(number)) == 10:
-            number = '0' + str(df['number'][i])
-
         user_object = Contact(name = name, number = number, group = group)
         user_object.save()
-
-        # print("Number: " + str(number) + " Provider: " + provider + " Content: " + content + " Count:" + str(i))
 
 
 def Login(request): #login is reserved word -- strictly use Login :)
@@ -173,48 +165,6 @@ def home(request):
     # GOIP LISTS
     goip_lists = Goip.objects.filter()
 
-    # sent_sell = Email.objects.filter(Q(date__range=[date_from, date_to])).order_by('id').aggregate(Sum('sell'))
-    # sent_sell = sent_sell['sell__sum']
-
-    # received_buy = SMS.objects.filter(Q(date__range=[date_from, date_to])).order_by('id').aggregate(Sum('buy'))
-    # received_buy = received_buy['buy__sum']
-
-    # received_sell = SMS.objects.filter(Q(date__range=[date_from, date_to])).order_by('id').aggregate(Sum('sell'))
-    # received_sell = received_sell['sell__sum']
-
-    # getcontext().prec = 6
-
-    # total_buy = Decimal(sent_buy) + Decimal(received_buy)
-    # total_sell = Decimal(sent_sell) + Decimal(received_sell)
-
-    # total_earnings = Decimal(total_sell) - Decimal(total_buy)
-    # total_earnings_php = Decimal(total_earnings) * Decimal(52.91)
-
-    # # GRAPH USAGE PER COUNTRY #######################################################################################################################
-
-    # countries = Rate.objects.all()
-
-    # graph_list = []
-
-    # for x in countries:
-
-    #     total_sent = Email.objects.filter(Q(date__range=[date_from, date_to]),Q(subject__icontains=x.code)).order_by('id').aggregate(Sum('sell'))
-    #     total_sent = total_sent['sell__sum']
-
-    #     total_received = SMS.objects.filter(Q(date__range=[date_from, date_to]),Q(to_number__icontains=x.code)).order_by('id').aggregate(Sum('sell'))
-    #     total_received = total_received['sell__sum']
-
-    #     if total_sent is None:
-    #         total_sent = 0.0000
-
-    #     if total_received is None:
-    #         total_received = 0.0000
-
-    #     graph_dict = {'country':x,'total_sent':total_sent,'total_received':total_received}
-    #     graph_list.append(dict(graph_dict))
-        
-        
-    # # GRAPH LAST 30 DAYS ##############################################################################################################################   
 
     def daterange(start_date, end_date):
         for n in range(int ((end_date - start_date).days)):
@@ -249,7 +199,6 @@ def home(request):
         'sms_queue':sms_queue,
         'sms_failed':sms_failed,
         'activate':'home',
-        # 'graph_list':graph_list,
         'graph_date_list':graph_date_list,
         'goip_lists':goip_lists,
     }
@@ -265,7 +214,6 @@ def daterange_submit(request):
     date_to = request.POST['to']
     current_url = request.POST['current_url']
     
-    # Get Current Logged-in User ID
     current_user = request.user
     user_id = current_user.id
     
@@ -276,7 +224,6 @@ def daterange_submit(request):
 @login_required
 def received(request):
   
-    # Get Current Logged-in User ID
     current_user = request.user
     user_id = current_user.id
 
@@ -302,7 +249,6 @@ def received(request):
 @login_required
 def sent(request):
   
-    # Get Current Logged-in User ID
     current_user = request.user
     user_id = current_user.id
        
@@ -326,7 +272,6 @@ def sent(request):
 @login_required
 def contacts(request):
   
-    # Get Current Logged-in User ID
     current_user = request.user
     user_id = current_user.id
        
@@ -366,7 +311,6 @@ def contacts(request):
 @login_required
 def contacts_list(request,group):
 
-    # Get Current Logged-in User ID
     current_user = request.user
     user_id = current_user.id
        
@@ -394,7 +338,6 @@ def contacts_delete(request,group):
 
     Contact.objects.filter(group=group).delete()
 
-    # Get Current Logged-in User ID
     current_user = request.user
     user_id = current_user.id
        
@@ -403,7 +346,6 @@ def contacts_delete(request,group):
 @login_required
 def queue(request):
   
-    # Get Current Logged-in User ID
     current_user = request.user
     user_id = current_user.id
        
@@ -427,7 +369,6 @@ def queue(request):
 @login_required
 def queue_blast(request):
   
-    # Get Current Logged-in User ID
     current_user = request.user
     user_id = current_user.id
        
@@ -436,9 +377,6 @@ def queue_blast(request):
     date_to = str(daterange_get.date_to)
 
     current_url = "/portal/sent/" 
-
-
-    # queue_lists = QueueBlast.objects.filter(Q(date__range=[date_from, date_to])).order_by('-id')
 
     queueblast = QueueBlast.objects.filter().order_by('-id')
 
@@ -469,13 +407,13 @@ def queue_blast(request):
         
         percent = (float(count_sent)/float(count_total)) * 100.0
     
-        # Set Action
+        # SET ACTION
         if count_total == count_success:
             action = "Done"
         elif count_total > count_success:
             action = "Resend"
 
-        # Set Status
+        # SET STATUS
         if count_total == count_sent:
             status = "Finish"
         
@@ -509,19 +447,7 @@ def sendsms(request):
     user_id = current_user.username
     tag = 'Direct'
 
-    # Check if Prefix in Dtabase
-    get_prefix = Prefix.objects.get(prefix=number[:4])
-
-    # Select Which Provider
-    if len(str(number)) < 5:
-        provider = 'NONE'
-    elif get_prefix:
-        provider_get = Prefix.objects.get(prefix=number[:4])
-        provider = provider_get.number
-    else:
-        provider = 'NONE'
-
-    user_object = Queue(provider = provider, name = 'None', to_number = number, user = user_id, message = message, tag = tag)
+    user_object = Queue(name = 'None', to_number = number, user = user_id, message = message, tag = tag)
     user_object.save()
       
     return HttpResponseRedirect('/portal/queue/')
@@ -597,7 +523,7 @@ def smsblast_submit(request):
 
             queue_message(tag,filename,request)
 
-            # Save record to Queue Blast Tables
+            # SAVE RECORD TO QUEUE BLAST TABLES
             user_object = QueueBlast(tag = tag, message = '[Message is uploaded in excel file.]', status = 'Sending')
             user_object.save()
 
@@ -611,18 +537,23 @@ def smsblast_submit(request):
 @login_required
 def smsblast_group_submit(request):
 
+    goip_blasting = ['GoIPA01','GoIPA02','GoIPA03','GoIPA04','GoIPA05','GoIPA06','GoIPA07','GoIPA08',
+                     'GoIPB01','GoIPB02','GoIPB03','GoIPB04','GoIPB05','GoIPB06','GoIPB07','GoIPB08',
+                     'GoIPC01','GoIPC02','GoIPC03','GoIPC04','GoIPC05','GoIPC06','GoIPC07','GoIPC08',
+                     'GoIPD01','GoIPD02','GoIPD03','GoIPD04','GoIPD05','GoIPD06']
+
     current_user = request.user
     user_id = current_user.username
 
-    online_goip_list = Goip.objects.filter().order_by('id')
-    online_goip_list_total = len(online_goip_list)
-    online_goip_list_count = 0
-
     if request.method == 'POST':
+
         tag = request.POST['tag']
-        provider = request.POST['provider']
         groups = request.POST.getlist('groups[]')
         message = request.POST['message']
+
+        online_goip_list = Goip.objects.filter(name__in=goip_blasting).order_by('id')[:30]
+        online_goip_list_total = len(online_goip_list)
+        online_goip_list_count = 0
 
         for i in groups:
 
@@ -630,28 +561,18 @@ def smsblast_group_submit(request):
         
             for x in contact_lists:
                             
-                # If Provider is BLASTING 
-                if provider == 'BLASTING':
-                    if len(str(x.number)) < 5:
-                        provider = 'NONE'
-                    elif Prefix.objects.filter(prefix=x.number[:4]).exists():
-                        provider_get = Prefix.objects.get(prefix=x.number[:4])
-                        provider = provider_get.provider
-                    else:
-                        provider = 'NONE'
-
-                # Assign GoIP
+                # ASSIGN GOIP
                 if online_goip_list_count >= online_goip_list_total:
                     online_goip_list_count = 0
 
                 goip = online_goip_list[online_goip_list_count].name
                 online_goip_list_count = online_goip_list_count + 1
                 
-                user_object = Queue(provider = provider, name = x.name, to_number = x.number, user = user_id, message = message, goip = goip, tag = tag)
+                user_object = Queue(name = x.name, to_number = x.number, user = user_id, message = message, goip = goip, tag = tag)
                 user_object.save()
 
 
-        # Save record to Queue Blast Tables
+        # SAVE RECORD TO QUEUE BLAST TABLE
         user_object = QueueBlast(tag = tag, message = message, status = 'Sending')
         user_object.save()
 
