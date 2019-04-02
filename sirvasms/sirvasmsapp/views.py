@@ -433,7 +433,28 @@ def queue_blast(request):
 @login_required
 def queue_blast_resend(request,tag):
 
-    Queue.objects.filter(Q(tag=tag)&Q(flag=2)).update(flag=0)
+    goip_blasting = ['GoIPA01','GoIPA02','GoIPA03','GoIPA04','GoIPA05','GoIPA06','GoIPA07','GoIPA08',
+                     'GoIPB01','GoIPB02','GoIPB03','GoIPB04','GoIPB05','GoIPB06','GoIPB07','GoIPB08',
+                     'GoIPC01','GoIPC02','GoIPC03','GoIPC04','GoIPC05','GoIPC06','GoIPC07','GoIPC08',
+                     'GoIPD01','GoIPD02','GoIPD03','GoIPD04','GoIPD05','GoIPD06']
+
+    queue_lists = Queue.objects.filter(Q(tag=tag)&Q(flag=2)).order_by('id')
+
+    online_goip_list = Goip.objects.filter(name__in=goip_blasting).order_by('id')
+    online_goip_list_total = len(online_goip_list)
+    online_goip_list_count = 0
+
+    for x in queue_lists:
+                    
+        # ASSIGN GOIP
+        if online_goip_list_count >= online_goip_list_total:
+            online_goip_list_count = 0
+            
+        goip = online_goip_list[online_goip_list_count].name
+        online_goip_list_count = online_goip_list_count + 1
+        
+        Queue.objects.filter(id=x.id).update(flag=0,goip=goip)
+        
     return HttpResponseRedirect('/portal/queue_blast/') 
 
 
@@ -551,7 +572,7 @@ def smsblast_group_submit(request):
         groups = request.POST.getlist('groups[]')
         message = request.POST['message']
 
-        online_goip_list = Goip.objects.filter(name__in=goip_blasting).order_by('id')[:30]
+        online_goip_list = Goip.objects.filter(name__in=goip_blasting).order_by('id')
         online_goip_list_total = len(online_goip_list)
         online_goip_list_count = 0
 
