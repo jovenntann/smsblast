@@ -18,22 +18,11 @@ import urllib
 
 def goip_send(provider,number,message,goip):
  
-    if provider == 'GLOBE':
-        provider = 1
-    elif provider == 'SMART':
-        provider = 2
-    elif provider == 'SPECIAL1':
-        provider = 3
-    elif provider == 'SPECIAL2':
-        provider = 4
-    else:
-        provider = 0
-
     # Encode to URL Format
     message = urllib.quote_plus(message)
 
     # Replace Provider
-    url = "http://localhost/goip/en/dosend.php?USERNAME=root&PASSWORD=root&smsprovider=" + str(provider) + "&goipname=" + goip + "&smsnum=" + number + "&method=2&Memo=" + message
+    url = "http://localhost/goip/en/dosend.php?USERNAME=root&PASSWORD=root&smsprovider=ALL&goipname=1&smsnum=" + number + "&method=2&Memo=" + message
     reply = requests.post(url)
     # print(reply.text)
     messageid = re.search(r'messageid=(.*?)&USERNAME',reply.text).group(1)
@@ -89,7 +78,7 @@ while True:
         # print(goip)
         conn = mysql.connector.Connect(host='localhost',user='root',password='09106850351',database='goip')
         cursor = conn.cursor()
-        sql = "SELECT * FROM sirvasmsapp_queue WHERE flag = 0 AND provider = 'SPECIAL1';".format(id)
+        sql = "SELECT * FROM sirvasmsapp_queue WHERE flag = 0 AND goip = 'GoIPD07';".format(id)
         cursor.execute(sql)
         row = cursor.fetchone()
 
@@ -103,8 +92,7 @@ while True:
                 message = str(row[5])
                 flag = str(row[6])
                 tag = str(row[7])
-                # goip = str(row[8])
-                goip = 'GoIPD07'
+                goip = str(row[8])
 
                 results = goip_send(provider,to_number,message,goip)
 

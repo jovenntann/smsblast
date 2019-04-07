@@ -16,7 +16,7 @@ def goip_send(number,message,provider,goip):
  
     message = urllib.quote_plus(message)
     
-    url = "http://localhost/goip/en/dosend.php?USERNAME=root&PASSWORD=root&smsprovider=" + str(provider) + "&goipname=" + goip + "&smsnum=" + number + "&method=2&Memo=" + str(message)
+    url = "http://localhost/goip/en/dosend.php?USERNAME=root&PASSWORD=root&smsprovider=1&goipname=" + goip + "&smsnum=" + number + "&method=2&Memo=" + str(message)
     reply = requests.post(url)
     messageid = re.search(r'messageid=(.*?)&USERNAME',reply.text).group(1)
 
@@ -107,7 +107,7 @@ while True:
                                 count = count + 1
                                 print(results)
                 elif to_number == 'GoIPD08':
-                        forward_to = ['09331707870','09367725681','09052328700','09255882626']
+                        forward_to = ['09062131607','09367725681','09052328700','09255882626']
                         count = 0
                         for i in forward_to:         
                                 results = goip_send(i,"From: " + str(srcnum) + "\nName: " + name + "\n\n" + msg,4,'GoIPD08')
