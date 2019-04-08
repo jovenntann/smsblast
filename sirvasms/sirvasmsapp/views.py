@@ -77,6 +77,9 @@ def queue_message(tag,filename,request):
         number = df['number'][i]
         content = df['content'][i]
 
+        if len(str(number)) == 10:
+            number = '0' + str(df['number'][i])
+
         # ASSIGN GOIP
         if online_goip_list_count >= online_goip_list_total:
             online_goip_list_count = 0
@@ -98,6 +101,9 @@ def upload_contacts(group,filename,request):
 
         name = df['name'][i]
         number = df['number'][i]
+
+        if len(str(number)) == 10:
+            number = '0' + str(df['number'][i])
 
         user_object = Contact(name = name, number = number, group = group)
         user_object.save()
