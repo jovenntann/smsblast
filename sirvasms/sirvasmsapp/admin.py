@@ -12,6 +12,7 @@ from sirvasmsapp.models import Contact
 from sirvasmsapp.models import Goip
 from sirvasmsapp.models import Prov
 from sirvasmsapp.models import Prefix
+from sirvasmsapp.models import Configuration
 
 admin.site.register(Received)
 admin.site.register(DateRange)
@@ -22,3 +23,4 @@ admin.site.register(Contact)
 admin.site.register(Goip)
 admin.site.register(Prov)
 admin.site.register(Prefix)
+admin.site.register(Configuration)

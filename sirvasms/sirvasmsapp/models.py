@@ -6,6 +6,13 @@ from django.db import models
 from django.contrib.auth.models import User
 import datetime
 
+class Configuration(models.Model):
+    name = models.CharField(max_length=80)
+    value = models.CharField(max_length=80)
+
+    def __str__(self):
+        return str(self.name)
+
 class Received(models.Model):
     date = models.DateTimeField()
     from_number = models.CharField(max_length=80)

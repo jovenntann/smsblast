@@ -14,7 +14,6 @@ urlpatterns = [
   url(r'^contacts/list/(?P<group>.*)$', views.contacts_list,name='contacts_list'),
   url(r'^contacts/delete/(?P<group>.*)$', views.contacts_delete,name='contacts_delete'),
 
-
   url(r'^queue/$',views.queue,name='queue'),
   url(r'^queue_blast/$',views.queue_blast,name='queue_blast'),
   url(r'^queue_blast/resend/(?P<tag>.*)$', views.queue_blast_resend,name='queue_blast_resend'),
@@ -27,8 +26,8 @@ urlpatterns = [
   url(r'^daterange/submit/$',views.daterange_submit,name='daterange_submit'),
 
   url(r'^ajax_queue_status/$',views.ajax_queue_status,name='ajax_queue_status'),
-
   url(r'^export/csv/$', views.export_received_csv, name='export_received_csv'),
+  url(r'^activate/$',views.activate,name='activate'),
 ]
 
 handler404 = views.error_404

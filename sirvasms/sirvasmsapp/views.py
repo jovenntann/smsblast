@@ -26,6 +26,7 @@ from sirvasmsapp.models import Rate
 from sirvasmsapp.models import Contact
 from sirvasmsapp.models import Prefix
 from sirvasmsapp.models import Goip
+from sirvasmsapp.models import Configuration
 
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 
@@ -55,6 +56,11 @@ from django.http import JsonResponse
 
 # Export to CSV
 import csv
+
+# READ SYSTEM UUID
+mycmd = os.popen("dmidecode -t system").read()
+list_uuid = re.findall(r'UUID: (.+)', mycmd)
+uuid = list_uuid[0]
 
 def queue_message(tag,filename,request):
 
@@ -142,10 +148,24 @@ def Logout(request):
 @login_required
 def index(request):
     return HttpResponseRedirect('portal/home/')
-  
+
+@login_required
+def activate(request):
+
+    if request.method == 'POST':
+        licensekey = request.POST['licensekey']
+    Configuration.objects.filter(name='licensekey').update(value=licensekey)
+    return HttpResponseRedirect('/portal/home/')
+
 @login_required
 def home(request):
-  
+
+    # CHECK LICENSEKEY
+    configuration_get = Configuration.objects.get(name='licensekey')
+    licensekey = str(configuration_get.value)
+    if uuid != licensekey:
+        return render(request,'sirvasmsapp/lockscreen.html')
+
     # Get Current Logged-in User ID
     current_user = request.user
     user_id = current_user.id
@@ -230,6 +250,12 @@ def daterange_submit(request):
 @login_required
 def received(request):
   
+    # CHECK LICENSEKEY
+    configuration_get = Configuration.objects.get(name='licensekey')
+    licensekey = str(configuration_get.value)
+    if uuid != licensekey:
+        return render(request,'sirvasmsapp/lockscreen.html')
+
     current_user = request.user
     user_id = current_user.id
 
@@ -254,6 +280,12 @@ def received(request):
   
 @login_required
 def sent(request):
+
+    # CHECK LICENSEKEY
+    configuration_get = Configuration.objects.get(name='licensekey')
+    licensekey = str(configuration_get.value)
+    if uuid != licensekey:
+        return render(request,'sirvasmsapp/lockscreen.html')
   
     current_user = request.user
     user_id = current_user.id
@@ -278,6 +310,12 @@ def sent(request):
 @login_required
 def contacts(request):
   
+    # CHECK LICENSEKEY
+    configuration_get = Configuration.objects.get(name='licensekey')
+    licensekey = str(configuration_get.value)
+    if uuid != licensekey:
+        return render(request,'sirvasmsapp/lockscreen.html')
+
     current_user = request.user
     user_id = current_user.id
        
@@ -351,6 +389,12 @@ def contacts_delete(request,group):
 
 @login_required
 def queue(request):
+
+    # CHECK LICENSEKEY
+    configuration_get = Configuration.objects.get(name='licensekey')
+    licensekey = str(configuration_get.value)
+    if uuid != licensekey:
+        return render(request,'sirvasmsapp/lockscreen.html')
   
     current_user = request.user
     user_id = current_user.id
@@ -375,6 +419,12 @@ def queue(request):
 @login_required
 def queue_blast(request):
   
+    # CHECK LICENSEKEY
+    configuration_get = Configuration.objects.get(name='licensekey')
+    licensekey = str(configuration_get.value)
+    if uuid != licensekey:
+        return render(request,'sirvasmsapp/lockscreen.html')
+
     current_user = request.user
     user_id = current_user.id
        
@@ -482,6 +532,12 @@ def sendsms(request):
 @login_required
 def smsblast_upload(request):
 
+    # CHECK LICENSEKEY
+    configuration_get = Configuration.objects.get(name='licensekey')
+    licensekey = str(configuration_get.value)
+    if uuid != licensekey:
+        return render(request,'sirvasmsapp/lockscreen.html')
+
     current_user = request.user
     user_id = current_user.id
        
@@ -503,6 +559,12 @@ def smsblast_upload(request):
       
 @login_required
 def smsblast_group(request):
+
+    # CHECK LICENSEKEY
+    configuration_get = Configuration.objects.get(name='licensekey')
+    licensekey = str(configuration_get.value)
+    if uuid != licensekey:
+        return render(request,'sirvasmsapp/lockscreen.html')
 
     current_user = request.user
     user_id = current_user.id
