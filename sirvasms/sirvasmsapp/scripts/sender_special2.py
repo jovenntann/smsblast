@@ -22,7 +22,7 @@ def goip_send(provider,number,message,goip):
     message = urllib.quote_plus(message)
 
     # Replace Provider
-    url = "http://localhost/goip/en/dosend.php?USERNAME=root&PASSWORD=root&smsprovider=ALL&goipname=1&smsnum=" + number + "&method=2&Memo=" + message
+    url = "http://localhost/goip/en/dosend.php?USERNAME=root&PASSWORD=root&smsprovider=1&goipname=" + goip + "&smsnum=" + number + "&method=2&Memo=" + message
     reply = requests.post(url)
     # print(reply.text)
     messageid = re.search(r'messageid=(.*?)&USERNAME',reply.text).group(1)
