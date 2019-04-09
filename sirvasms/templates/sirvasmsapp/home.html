@@ -272,6 +272,43 @@
 {% block chart_js %}
 
 <script>
+  
+// AJAX 
+function send_message() {
+
+  // message = document.getElementById('message').value;
+  //direction = document.getElementById('direction').value;
+  //Delete the Input Box
+  //document.getElementById("message").value = "";
+
+  $.ajax({
+          url: "/ajax_queue_status",
+          type: 'GET',
+          data: {'customer_id':'1','message':'Hello','direction':'In'},
+          dataType: 'json',
+
+          success: function(data) {
+            console.log(data);
+            document.getElementById("sms_sent").innerHTML  = data.sms_sent;
+            document.getElementById("sms_received").innerHTML  = data.sms_received;
+            document.getElementById("sms_queue").innerHTML  = data.sms_queue;
+            document.getElementById("sms_failed").innerHTML  = data.sms_failed;
+            // change background color
+            if (data.sms_queue>0) {
+              document.getElementById("sms_queue_class").className = "small-box bg-red";
+            } else {
+              document.getElementById("sms_queue_class").className = "small-box bg-blue";
+            }
+            
+          }
+    });
+  }
+
+  window.setInterval(function(){
+    send_message();
+  }, 1000);
+
+
 
     // GOIP TABLES
 
