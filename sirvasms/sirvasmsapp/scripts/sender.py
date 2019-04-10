@@ -73,8 +73,8 @@ def onlineGoIP():
 
         conn = mysql.connector.Connect(host='localhost',user='root',password='09106850351',database='goip')
         cursor = conn.cursor()
-        # sql = "SELECT goip.name FROM goip WHERE (alive = 1 AND gsm_status = 'LOGIN' AND provider = 1) OR  (alive = 1 AND gsm_status = 'LOGIN' AND provider = 2) ORDER BY name ASC;" 
-        sql = "SELECT goip.name FROM goip WHERE (alive = 0 AND gsm_status = '' AND provider = 1) OR  (alive = 0 AND gsm_status = '' AND provider = 2) ORDER BY name ASC;" 
+        sql = "SELECT goip.name FROM goip WHERE (alive = 1 AND gsm_status = 'LOGIN' AND provider = 1) OR  (alive = 1 AND gsm_status = 'LOGIN' AND provider = 2) ORDER BY name ASC;" 
+        # sql = "SELECT goip.name FROM goip WHERE (alive = 0 AND gsm_status = '' AND provider = 1) OR  (alive = 0 AND gsm_status = '' AND provider = 2) ORDER BY name ASC;" 
         cursor.execute(sql)
         result = cursor.fetchall()
 
