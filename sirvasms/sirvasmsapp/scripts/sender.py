@@ -99,16 +99,15 @@ def processMessage(goip):
 
                 id = str(row[0])
                 date = str(row[1])
-                provider = str(row[2])
-                to_number = str(row[3])
-                user = str(row[4])
-                message = str(row[5])
-                flag = str(row[6])
-                tag = str(row[7])
+                to_number = str(row[2])
+                user = str(row[3])
+                message = str(row[4])
+                flag = str(row[5])
+                tag = str(row[6])
 
                 # CALL SMS API
                 results = goip_send(to_number,message,goip)
-                print(id + ' | ' + date + ' | ' + provider + ' | ' + to_number+ ' | ' + user + ' | ' + message[:15] + ' | ' + tag + ' | ' + goip + ' | ' + flag + ' | ' + str(datetime.datetime.now()))
+                print(id + ' | ' + date + ' | ' + to_number+ ' | ' + user + ' | ' + message[:15] + ' | ' + tag + ' | ' + goip + ' | ' + flag + ' | ' + str(datetime.datetime.now()))
                 
                 # UPDATE QUEUE STATUS
                 if results['status'] == 'Failed':
