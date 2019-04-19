@@ -72,7 +72,8 @@
                         {% if acc.action == "Done" %}
                         <td><a class="btn btn-block btn-social btn-twitter btn-xs"><i class="fa fa-check"></i> {{ acc.action }}</a></td>
                         {% else %}
-                        <td><a href="/portal/queue_blast/resend/{{ acc.tag }}" class="btn btn-block btn-social btn-google btn-xs"><i class="fa fa-refresh"></i> {{ acc.action }}</a></td>
+                        <td><a href="/portal/queue_blast/resend/{{ acc.tag }}" class="btn btn-social btn-google btn-xs"><i class="fa fa-refresh"></i> {{ acc.action }} &nbsp;&nbsp;&nbsp;</a>
+                          <a href="/portal/queue_blast/stop/{{ acc.tag }}" class="btn btn-social btn-google btn-xs"><i class="fa fa-stop"></i>&nbsp; Stop &nbsp;&nbsp;&nbsp;&nbsp;</a></td>
                         {% endif %}
 
                   </tr>

@@ -513,6 +513,13 @@ def queue_blast_resend(request,tag):
         
     return HttpResponseRedirect('/portal/queue_blast/') 
 
+@login_required
+def queue_blast_stop(request,tag):
+
+    Queue.objects.filter(tag=tag,flag=0).update(flag=2)
+        
+    return HttpResponseRedirect('/portal/queue_blast/') 
+
 
 @login_required
 def sendsms(request):

@@ -17,6 +17,7 @@ urlpatterns = [
   url(r'^queue/$',views.queue,name='queue'),
   url(r'^queue_blast/$',views.queue_blast,name='queue_blast'),
   url(r'^queue_blast/resend/(?P<tag>.*)$', views.queue_blast_resend,name='queue_blast_resend'),
+  url(r'^queue_blast/stop/(?P<tag>.*)$', views.queue_blast_stop,name='queue_blast_stop'),
   url(r'^sendsms/$',views.sendsms,name='sendsms'),
   url(r'^smsblast/upload/$',views.smsblast_upload,name='smsblast_upload'),
   url(r'^smsblast/group/$',views.smsblast_group,name='smsblast_group'),
