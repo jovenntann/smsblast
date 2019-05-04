@@ -482,7 +482,7 @@ $(document).ready(function() {
   function getGraph() {
       var jqXHR = $.ajax({
         async: false,
-        url: "http://192.168.1.220:8000/ajax_populate_graph/",
+        url: "/ajax_populate_graph",
         type: 'GET',
         data: {},
         dataType: 'json',
