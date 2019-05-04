@@ -176,17 +176,10 @@ def home(request):
 
     current_url = "/portal/home"
 
-    sms_sent = Queue.objects.filter(Q(dateSent__range=[date_from, date_to])&Q(flag=1))
-    sms_sent = sms_sent.count()
-
-    sms_received = Received.objects.filter(Q(date__range=[date_from, date_to]))
-    sms_received = sms_received.count()
-
-    sms_queue = Queue.objects.filter(Q(dateSent__range=[date_from, date_to])&Q(flag=0))
-    sms_queue = sms_queue.count()
-
-    sms_failed = Queue.objects.filter(Q(dateSent__range=[date_from, date_to])&Q(flag=2))
-    sms_failed = sms_failed.count()
+    sms_sent = Queue.objects.filter(Q(dateSent__range=[date_from, date_to])&Q(flag=1)).count()
+    sms_received = Received.objects.filter(Q(date__range=[date_from, date_to])).count()
+    sms_queue = Queue.objects.filter(Q(dateSent__range=[date_from, date_to])&Q(flag=0)).count()
+    sms_failed = Queue.objects.filter(Q(dateSent__range=[date_from, date_to])&Q(flag=2)).count()
 
     # GOIP LISTS
     goip_lists = Goip.objects.filter()
@@ -202,19 +195,19 @@ def home(request):
     graph_date_list = []
     graph_date_dict = {}
 
-    for single_date in daterange(start_date, end_date):
+    # for single_date in daterange(start_date, end_date):
                     
-        total_sent = Queue.objects.filter(Q(flag=1),Q(dateSent__range=[single_date, single_date + timedelta(days=1)])).order_by('id').count()
-        total_received = Received.objects.filter(Q(date__range=[single_date, single_date + timedelta(days=1)])).order_by('id').count()
+    #     total_sent = Queue.objects.filter(Q(flag=1),Q(dateSent__range=[single_date, single_date + timedelta(days=1)])).order_by('id').count()
+    #     total_received = Received.objects.filter(Q(date__range=[single_date, single_date + timedelta(days=1)])).order_by('id').count()
         
-        if total_sent is None:
-            total_sent = 0
+    #     if total_sent is None:
+    #         total_sent = 0
             
-        if total_received is None:
-            total_received = 0
+    #     if total_received is None:
+    #         total_received = 0
 
-        graph_date_dict = {'date':single_date.strftime("%Y-%m-%d"),'total_sent':total_sent,'total_received':total_received}
-        graph_date_list.append(dict(graph_date_dict))
+    #     graph_date_dict = {'date':single_date.strftime("%Y-%m-%d"),'total_sent':total_sent,'total_received':total_received}
+    #     graph_date_list.append(dict(graph_date_dict))
           
     home_context = {
         'current_url':current_url,
@@ -741,6 +734,46 @@ def ajax_queue_status(request):
 
     json_data = {
         'sms_sent':sms_sent,'sms_received':sms_received,'sms_queue':sms_queue,'sms_failed':sms_failed,
+    }
+
+    return JsonResponse(json_data)
+
+@login_required
+def ajax_populate_graph(request):
+
+    current_user = request.user
+    user_id = current_user.id
+    
+    daterange_get = DateRange.objects.get(id=user_id)
+    date_from = str(daterange_get.date_from)
+    date_to = str(daterange_get.date_to)
+
+    def daterange(start_date, end_date):
+        for n in range(int ((end_date - start_date).days)):
+            yield start_date + timedelta(n)
+        
+    start_date = date(int(daterange_get.date_from.strftime("%Y")), int(daterange_get.date_from.strftime("%m")), int(daterange_get.date_from.strftime("%d")))
+    end_date = date(int(daterange_get.date_to.strftime("%Y")), int(daterange_get.date_to.strftime("%m")), int(daterange_get.date_to.strftime("%d")))
+
+    graph_date_list = []
+    graph_date_dict = {}
+
+    for single_date in daterange(start_date, end_date):
+                    
+        total_sent = Queue.objects.filter(Q(flag=1),Q(dateSent__range=[single_date, single_date + timedelta(days=1)])).order_by('id').count()
+        total_received = Received.objects.filter(Q(date__range=[single_date, single_date + timedelta(days=1)])).order_by('id').count()
+        
+        if total_sent is None:
+            total_sent = 0
+            
+        if total_received is None:
+            total_received = 0
+
+        graph_date_dict = {'date':single_date.strftime("%Y-%m-%d"),'total_sent':total_sent,'total_received':total_received}
+        graph_date_list.append(dict(graph_date_dict))
+
+    json_data = {
+        'graph_date_list':graph_date_list,
     }
 
     return JsonResponse(json_data)

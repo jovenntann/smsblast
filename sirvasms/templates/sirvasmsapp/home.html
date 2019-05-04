@@ -474,6 +474,51 @@ function send_message() {
 
     };
 
+
+// JQUERY GRAPH DATA -------------------------------------------------------------------------------------------------------------------------------------
+
+$(document).ready(function() {
+
+  function getGraph() {
+      var jqXHR = $.ajax({
+        async: false,
+        url: "http://192.168.1.220:8000/ajax_populate_graph/",
+        type: 'GET',
+        data: {},
+        dataType: 'json',
+      });
+      return jqXHR.responseJSON;
+    }
+    // Get Graph Data Objects -> Array
+    var data = getGraph();
+    // Get Date Array
+    var dates = [];
+    for (i = 0; i < data['graph_date_list'].length; i++) { 
+      dates.push(data['graph_date_list'][i]['date'].toString())
+    }
+    // Get Sent Array
+    var sents = [];
+    for (i = 0; i < data['graph_date_list'].length; i++) { 
+      sents.push(data['graph_date_list'][i]['total_sent'].toString())
+    }
+    // Get Receive Array
+    var received = [];
+    for (i = 0; i < data['graph_date_list'].length; i++) { 
+      received.push(data['graph_date_list'][i]['total_received'].toString())
+    }
+
+    config2.data.labels = dates;
+    config2.data.datasets[0].data = sents;
+    config2.data.datasets[1].data = received;
+    
+    var ctx3 = document.getElementById("canvas-line").getContext("2d");
+    window.myLine = new Chart(ctx3, config2);
+
+});
+
+
+
+
 </script>
 
 {% endblock %}
